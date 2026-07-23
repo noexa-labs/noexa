@@ -147,10 +147,14 @@ export default async function Page({ params }: { params: Promise<{ lang: string 
         <div className="hdr-gutter border-r border-[var(--rule)] h-full flex items-center justify-center py-[.875rem]">
           <span style={{ fontFamily: MONO, fontSize: ".5rem", color: "var(--rule)", letterSpacing: ".08em" }}>HDR</span>
         </div>
-        <div className="px-6 py-[.875rem] flex items-center gap-5">
-          <span style={{ fontFamily: MONO, fontSize: ".8rem", fontWeight: 600, letterSpacing: ".2em", textTransform: "uppercase", color: "var(--ink)" }}>
-            No<em style={{ fontStyle: "normal", color: "var(--amber)" }}>e</em>xa
-          </span>
+        <div className="px-6 py-[.875rem] flex items-center gap-4">
+          <svg width="16" height="22" viewBox="0 0 52 68" xmlns="http://www.w3.org/2000/svg" aria-label="Noexa Labs" style={{ color: "var(--ink)", flexShrink: 0 }}>
+            <rect x="0" y="0" width="12" height="68" fill="currentColor"/>
+            <line x1="12" y1="0" x2="40" y2="68" stroke="currentColor" strokeWidth="2"/>
+            <line x1="40" y1="0" x2="40" y2="68" stroke="currentColor" strokeWidth="2"/>
+            <rect x="40" y="0" width="12" height="10" fill="currentColor"/>
+          </svg>
+          <span style={{ fontFamily: MONO, fontSize: ".65rem", fontWeight: 600, letterSpacing: ".2em", color: "var(--ink-2)" }}>LABS</span>
           <span className="w-px h-[14px] bg-[var(--rule)] shrink-0" aria-hidden="true" />
           <span className="classification" style={{ fontFamily: MONO, fontSize: ".6rem", color: "var(--ink-3)", letterSpacing: ".1em", textTransform: "uppercase" }}>
             {t.classification}

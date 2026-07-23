@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { ScrollToTop } from "./ScrollToTop";
 
 export const metadata: Metadata = {
   title: "Noexa Labs",
@@ -13,7 +14,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <head>
         <script dangerouslySetInnerHTML={{ __html: `(function(){var t=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';document.documentElement.setAttribute('data-theme',t);})();` }} />
       </head>
-      <body>{children}</body>
+      <body><ScrollToTop />{children}</body>
     </html>
   );
 }

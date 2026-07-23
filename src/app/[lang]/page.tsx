@@ -1,5 +1,5 @@
-import Link from "next/link";
 import { ThemeToggle } from "./ThemeToggle";
+import { LanguageToggle } from "./LanguageToggle";
 import type { Metadata } from "next";
 
 const MONO = "ui-monospace,'Courier New',monospace";
@@ -161,11 +161,7 @@ export default async function Page({ params }: { params: Promise<{ lang: string 
             className="transition-colors hover:text-[var(--ink-2)]">
             admin@noexa.org
           </a>
-          <Link href={`/${t.otherSlug}`}
-            style={{ fontFamily: MONO, fontSize: ".65rem", color: "var(--ink-3)", background: "none", border: "none", cursor: "pointer", padding: 0 }}
-            className="transition-colors hover:text-[var(--ink-2)]">
-            {t.otherLang}
-          </Link>
+          <LanguageToggle slug={t.otherSlug} label={t.otherLang} />
           <ThemeToggle />
         </div>
       </header>

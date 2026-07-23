@@ -71,10 +71,39 @@ const D = {
 
 type Lang = keyof typeof D;
 
+const BASE_URL = "https://www.noexa.org";
+
 export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
   const { lang } = await params;
-  const t = D[(lang as Lang) in D ? (lang as Lang) : "id"];
-  return { title: t.meta.title, description: t.meta.desc };
+  const l = (lang as Lang) in D ? (lang as Lang) : "id";
+  const t = D[l];
+  const url = `${BASE_URL}/${l}`;
+  const other = l === "id" ? "en" : "id";
+
+  return {
+    title: t.meta.title,
+    description: t.meta.desc,
+    metadataBase: new URL(BASE_URL),
+    alternates: {
+      canonical: url,
+      languages: { [other]: `${BASE_URL}/${other}` },
+    },
+    openGraph: {
+      title: t.meta.title,
+      description: t.meta.desc,
+      url,
+      siteName: "Noexa Labs",
+      locale: l === "id" ? "id_ID" : "en_US",
+      alternateLocale: l === "id" ? "en_US" : "id_ID",
+      type: "website",
+    },
+    twitter: {
+      card: "summary",
+      title: t.meta.title,
+      description: t.meta.desc,
+    },
+    robots: { index: true, follow: true },
+  };
 }
 
 export async function generateStaticParams() {
@@ -85,13 +114,26 @@ export default async function Page({ params }: { params: Promise<{ lang: string 
   const { lang } = await params;
   const t = D[(lang as Lang) in D ? (lang as Lang) : "id"];
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: "Noexa Labs",
+    url: BASE_URL,
+    email: "admin@noexa.org",
+    foundingDate: "2026",
+    description: t.meta.desc,
+    address: { "@type": "PostalAddress", addressLocality: "Jakarta", addressCountry: "ID" },
+    sameAs: ["https://github.com/noexa-labs"],
+  };
+
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <span className="reg-bl" aria-hidden="true" />
       <span className="reg-br" aria-hidden="true" />
 
       {/* Coordinate strip */}
-      <div className="flex border-b border-[var(--rule)] bg-[var(--panel)] px-16 h-[22px]" aria-hidden="true">
+      <div className="coords-strip flex border-b border-[var(--rule)] bg-[var(--panel)] px-16 h-[22px]" aria-hidden="true">
         {["A","B","C","D","E","F"].map(c => (
           <div key={c} className="flex-1 flex items-end justify-center pb-[3px] border-r border-[var(--rule)] last:border-r-0"
             style={{ fontFamily: MONO, fontSize: ".5rem", color: "var(--rule)", letterSpacing: ".06em" }}>
@@ -101,8 +143,8 @@ export default async function Page({ params }: { params: Promise<{ lang: string 
       </div>
 
       {/* Header */}
-      <header className="grid border-b border-[var(--rule)] items-center" style={{ gridTemplateColumns: "64px 1fr auto" }}>
-        <div className="border-r border-[var(--rule)] h-full flex items-center justify-center py-[.875rem]">
+      <header className="hdr grid border-b border-[var(--rule)] items-center" style={{ gridTemplateColumns: "64px 1fr auto" }}>
+        <div className="hdr-gutter border-r border-[var(--rule)] h-full flex items-center justify-center py-[.875rem]">
           <span style={{ fontFamily: MONO, fontSize: ".5rem", color: "var(--rule)", letterSpacing: ".08em" }}>HDR</span>
         </div>
         <div className="px-6 py-[.875rem] flex items-center gap-5">
@@ -110,7 +152,7 @@ export default async function Page({ params }: { params: Promise<{ lang: string 
             No<em style={{ fontStyle: "normal", color: "var(--amber)" }}>e</em>xa
           </span>
           <span className="w-px h-[14px] bg-[var(--rule)] shrink-0" aria-hidden="true" />
-          <span style={{ fontFamily: MONO, fontSize: ".6rem", color: "var(--ink-3)", letterSpacing: ".1em", textTransform: "uppercase" }}>
+          <span className="classification" style={{ fontFamily: MONO, fontSize: ".6rem", color: "var(--ink-3)", letterSpacing: ".1em", textTransform: "uppercase" }}>
             {t.classification}
           </span>
         </div>
@@ -129,11 +171,11 @@ export default async function Page({ params }: { params: Promise<{ lang: string 
       </header>
 
       {/* N.00 */}
-      <div className="grid border-b border-[var(--rule)]" style={{ gridTemplateColumns: "64px 1fr" }}>
-        <div className="border-r border-[var(--rule)] flex justify-center pt-10">
+      <div className="row-2col grid border-b border-[var(--rule)]" style={{ gridTemplateColumns: "64px 1fr" }}>
+        <div className="row-gutter border-r border-[var(--rule)] flex justify-center pt-10">
           <span style={{ fontFamily: MONO, fontSize: ".55rem", color: "var(--amber)", letterSpacing: ".1em" }}>N.00</span>
         </div>
-        <div className="pt-10 pb-14 pl-6 pr-8">
+        <div className="row-body pt-10 pb-14 pl-6 pr-8">
           <p style={{ fontSize: "clamp(1rem, 2.2vw, 1.375rem)", fontWeight: 400, color: "var(--ink)", lineHeight: 1.6, letterSpacing: "-.02em", maxWidth: 700 }}>
             {t.statement}
           </p>
@@ -161,16 +203,16 @@ export default async function Page({ params }: { params: Promise<{ lang: string 
       </div>
 
       {/* N.01 */}
-      <div className="grid border-b border-[var(--rule)]" style={{ gridTemplateColumns: "64px 1fr" }}>
-        <div className="border-r border-[var(--rule)] flex justify-center pt-10">
+      <div className="row-2col grid border-b border-[var(--rule)]" style={{ gridTemplateColumns: "64px 1fr" }}>
+        <div className="row-gutter border-r border-[var(--rule)] flex justify-center pt-10">
           <span style={{ fontFamily: MONO, fontSize: ".55rem", color: "var(--amber)", letterSpacing: ".1em" }}>N.01</span>
         </div>
-        <div className="pt-10 pb-14 pl-6 pr-8">
+        <div className="row-body pt-10 pb-14 pl-6 pr-8">
           <div className="mb-6 pb-3 border-b border-[var(--rule)]"
             style={{ fontFamily: MONO, fontSize: ".6rem", letterSpacing: ".14em", textTransform: "uppercase", color: "var(--ink-3)" }}>
             {t.l01}
           </div>
-          <div className="grid gap-12 items-start" style={{ gridTemplateColumns: "1fr 260px" }}>
+          <div className="product-grid grid gap-12 items-start" style={{ gridTemplateColumns: "1fr 260px" }}>
             <div>
               <div className="flex items-baseline gap-4 mb-5">
                 <span style={{ fontSize: "1.75rem", fontWeight: 700, color: "var(--ink)", letterSpacing: "-.04em", lineHeight: 1 }}>
@@ -204,11 +246,11 @@ export default async function Page({ params }: { params: Promise<{ lang: string 
       </div>
 
       {/* N.02 */}
-      <div className="grid border-b border-[var(--rule)]" style={{ gridTemplateColumns: "64px 1fr" }}>
-        <div className="border-r border-[var(--rule)] flex justify-center pt-10">
+      <div className="row-2col grid border-b border-[var(--rule)]" style={{ gridTemplateColumns: "64px 1fr" }}>
+        <div className="row-gutter border-r border-[var(--rule)] flex justify-center pt-10">
           <span style={{ fontFamily: MONO, fontSize: ".55rem", color: "var(--amber)", letterSpacing: ".1em" }}>N.02</span>
         </div>
-        <div className="pt-10 pb-14 pl-6 pr-8">
+        <div className="row-body pt-10 pb-14 pl-6 pr-8">
           <div className="mb-6 pb-3 border-b border-[var(--rule)]"
             style={{ fontFamily: MONO, fontSize: ".6rem", letterSpacing: ".14em", textTransform: "uppercase", color: "var(--ink-3)" }}>
             {t.l02}
@@ -226,17 +268,17 @@ export default async function Page({ params }: { params: Promise<{ lang: string 
       </div>
 
       {/* N.03 */}
-      <div className="grid border-b border-[var(--rule)]" style={{ gridTemplateColumns: "64px 1fr" }}>
-        <div className="border-r border-[var(--rule)] flex justify-center pt-10">
+      <div className="row-2col grid border-b border-[var(--rule)]" style={{ gridTemplateColumns: "64px 1fr" }}>
+        <div className="row-gutter border-r border-[var(--rule)] flex justify-center pt-10">
           <span style={{ fontFamily: MONO, fontSize: ".55rem", color: "var(--amber)", letterSpacing: ".1em" }}>N.03</span>
         </div>
-        <div className="pt-10 pb-14 pl-6 pr-8">
+        <div className="row-body pt-10 pb-14 pl-6 pr-8">
           <div className="mb-6 pb-3 border-b border-[var(--rule)]"
             style={{ fontFamily: MONO, fontSize: ".6rem", letterSpacing: ".14em", textTransform: "uppercase", color: "var(--ink-3)" }}>
             {t.l03}
           </div>
           {t.principles.map(({ n, title, desc }) => (
-            <div key={n} className="grid gap-8 items-start py-[1.375rem] border-b border-[var(--panel)] last:border-b-0" style={{ gridTemplateColumns: "160px 1fr" }}>
+            <div key={n} className="principle-grid grid gap-8 items-start py-[1.375rem] border-b border-[var(--panel)] last:border-b-0" style={{ gridTemplateColumns: "160px 1fr" }}>
               <div>
                 <div className="mb-[.375rem]" style={{ fontFamily: MONO, fontSize: ".6rem", color: "var(--ink-3)", letterSpacing: ".06em" }}>{n}</div>
                 <div style={{ fontSize: ".9375rem", fontWeight: 600, color: "var(--ink)", letterSpacing: "-.02em", lineHeight: 1.3 }}>{title}</div>
@@ -248,14 +290,14 @@ export default async function Page({ params }: { params: Promise<{ lang: string 
       </div>
 
       {/* Title block */}
-      <div className="grid border-t-2 border-[var(--rule)] bg-[var(--panel)]" style={{ gridTemplateColumns: "64px 1fr" }}>
-        <div className="border-r border-[var(--rule)] flex items-center justify-center py-4">
+      <div className="title-block grid border-t-2 border-[var(--rule)] bg-[var(--panel)]" style={{ gridTemplateColumns: "64px 1fr" }}>
+        <div className="tb-gutter border-r border-[var(--rule)] flex items-center justify-center py-4">
           <span style={{ fontFamily: MONO, fontSize: ".45rem", color: "var(--rule)", letterSpacing: ".12em", writingMode: "vertical-lr", transform: "rotate(180deg)", textTransform: "uppercase" }}>
             Noexa Labs
           </span>
         </div>
-        <div className="grid" style={{ gridTemplateColumns: "repeat(4, 1fr)" }}>
-          <div className="col-span-4 px-5 py-2 border-b border-[var(--rule)] flex items-center justify-between">
+        <div className="tb-cells grid" style={{ gridTemplateColumns: "repeat(4, 1fr)" }}>
+          <div className="tb-full col-span-4 px-5 py-2 border-b border-[var(--rule)] flex items-center justify-between">
             <span style={{ fontFamily: MONO, fontSize: ".7rem", color: "var(--ink)", fontWeight: 600, letterSpacing: ".04em" }}>{t.tbTitle}</span>
             <span style={{ fontFamily: MONO, fontSize: ".6rem", color: "var(--ink-3)", letterSpacing: ".04em" }}>{t.sheet}</span>
           </div>

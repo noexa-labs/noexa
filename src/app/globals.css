@@ -1,0 +1,46 @@
+@import "tailwindcss";
+
+:root {
+  --frame:  #D8D9D4;
+  --ground: #EDEDE8;
+  --panel:  #E3E4DF;
+  --ink:    #161918;
+  --ink-2:  #515750;
+  --ink-3:  #8E9490;
+  --rule:   #C2C5C1;
+  --amber:  #B86B1A;
+}
+[data-theme="dark"] {
+  --frame:  #070908;
+  --ground: #0D100F;
+  --panel:  #131614;
+  --ink:    #E0E3DF;
+  --ink-2:  #87908A;
+  --ink-3:  #484E48;
+  --rule:   #222622;
+  --amber:  #C87E28;
+}
+
+html { background: var(--frame); }
+body {
+  background: var(--ground);
+  margin: 18px;
+  border: 1px solid var(--rule);
+  min-height: calc(100vh - 36px);
+  color: var(--ink-2);
+  font-family: system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  position: relative;
+}
+/* registration corner marks */
+body::before, body::after { content: ''; position: absolute; width: 10px; height: 10px; pointer-events: none; z-index: 10; }
+body::before { top: -6px; left: -6px;  border-top: 1px solid var(--rule); border-left: 1px solid var(--rule); }
+body::after  { top: -6px; right: -6px; border-top: 1px solid var(--rule); border-right: 1px solid var(--rule); }
+.reg-bl { position: absolute; bottom: -6px; left: -6px;  width: 10px; height: 10px; border-bottom: 1px solid var(--rule); border-left: 1px solid var(--rule); pointer-events: none; }
+.reg-br { position: absolute; bottom: -6px; right: -6px; width: 10px; height: 10px; border-bottom: 1px solid var(--rule); border-right: 1px solid var(--rule); pointer-events: none; }
+
+/* dot-leader */
+.ds-leader {
+  flex: 1; overflow: hidden; height: 1px; margin-bottom: 4px;
+  background: repeating-linear-gradient(to right, var(--rule) 0, var(--rule) 2px, transparent 2px, transparent 7px);
+}
